@@ -29,7 +29,6 @@ jobs:
       - name: Modify Files
         run: |
           sed -i 's/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(true);/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(false);/' hmcl-source/HMCL/src/main/java/org/jackhuang/hmcl/ui/account/AccountListPage.java
-          sed -i 's/GITHUB_SHA/NOT_GITHUB_SHA/g' hmcl-source/HMCL/build.gradle.kts
 
         shell: bash
 
