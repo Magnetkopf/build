@@ -39,7 +39,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd hmcl-source
-          ./gradlew build --no-daemon
+          ./gradlew build
         shell: bash
 
       - name: Release
