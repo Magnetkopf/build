@@ -26,9 +26,11 @@ jobs:
           distribution: 'zulu'
           java-package: 'jdk+fx'
 
-      - name: Modify AccountListPage.java
+      - name: Modify Files
         run: |
           sed -i 's/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(true);/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(false);/' hmcl-source/HMCL/src/main/java/org/jackhuang/hmcl/ui/account/AccountListPage.java
+          sed -i 's/GITHUB_SHA/NOT_GITHUB_SHA/g' hmcl-source/HMCL/build.gradle.kts
+
         shell: bash
 
       - name: Grant execute permission for gradlew
@@ -40,14 +42,6 @@ jobs:
           cd hmcl-source
           ./gradlew build
         shell: bash
-
-      - name: Delete
-        uses: dev-drpr/delete-tag-and-release@v1
-        with:
-          tag_name: snapshot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
       - name: Release
         uses: softprops/action-gh-release@v2
