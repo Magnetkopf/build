@@ -35,12 +35,19 @@ jobs:
         run: chmod +x hmcl-source/gradlew
         shell: bash
 
-
       - name: Build with Gradle
         run: |
           cd hmcl-source
           ./gradlew build
         shell: bash
+
+      - name: Delete
+        uses: dev-drpr/delete-tag-and-release@v1
+        with:
+          tag_name: snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
       - name: Release
         uses: softprops/action-gh-release@v2
