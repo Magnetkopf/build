@@ -39,13 +39,10 @@ jobs:
         shell: bash
 
       - name: Release
-        uses: ncipollo/release-action@v1
+        uses: actions/upload-artifact@v4
         with:
-          artifacts: "hmcl-source/HMCL/build/libs/*"
-          tag: "snapshot"
-          name: "Snapshot Build"
-          body: "自动构建"
-          allowUpdates: true
+          files: hmcl-source/HMCL/build/libs/*
+          tag_name: snapshot
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
