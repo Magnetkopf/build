@@ -1,0 +1,51 @@
+
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout HMCL Repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'HMCL-dev/HMCL'
+          path: 'hmcl-source'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          java-package: 'jdk+fx'
+
+      - name: Modify AccountListPage.java
+        run: |
+          sed -i 's/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(true);/static final BooleanProperty RESTRICTED = new SimpleBooleanProperty(false);/' hmcl-source/HMCL/src/main/java/org/jackhuang/hmcl/ui/account/AccountListPage.java
+        shell: bash
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x hmcl-source/gradlew
+        shell: bash
+
+
+      - name: Build with Gradle
+        run: |
+          cd hmcl-source
+          ./gradlew build --no-daemon
+        shell: bash
+
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "hmcl-source/HMCL/build/libs/*"
+          tag: "snapshot"
+          name: "Snapshot Build"
+          body: "自动构建"
+          allowUpdates: true
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
