@@ -1,0 +1,58 @@
+name: Build Calibre
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Run scripts
+        run: |
+          cd ${{ github.workspace }}/assets/Calibre
+          tar -czvf hmcl-linux.tar.gz *.sh icon.png
+          bash calibre.sh
+          bash deb.sh
+        shell: bash
+
+      - name: Copy file
+        run: |
+          cd ${{ github.workspace }}/assets/Calibre
+          mv ./usr/lib/x86_64-linux-gnu/* ./calibre/lib
+        shell: bash
+
+      - name: Packaging for Linux
+        run: |
+          cd ${{ github.workspace }}/assets/Calibre
+          tar -czvf calibre-linux-x64-with-lib.tar.gz ./calibre
+        shell: bash
+        
+      - name: Delete
+        uses: andreaswilli/delete-release-assets-action@v4.0.0
+        with:
+          github_token: ${{ secrets.USER_TOKEN }}
+          tag: Calibre
+          deleteOnlyFromDrafts: false
+        continue-on-error: true
+        
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ github.workspace }}/assets/Calibre/calibre-linux-x64-with-lib.tar.gz
+          tag_name: Calibre
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
