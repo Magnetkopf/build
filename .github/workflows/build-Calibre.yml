@@ -18,7 +18,6 @@ jobs:
       - name: Run scripts
         run: |
           cd ${{ github.workspace }}/assets/Calibre
-          tar -czvf hmcl-linux.tar.gz *.sh icon.png
           bash calibre.sh
           bash deb.sh
         shell: bash
